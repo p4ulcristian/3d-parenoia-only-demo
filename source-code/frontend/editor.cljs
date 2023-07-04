@@ -28,7 +28,7 @@
 
 (defn add-cube! [path]
   (let [scene @(subscribe [:db/get [:scene]])
-        geometry (new three/BoxGeometry 2 1 1)
+        geometry (new three/BoxGeometry 5 15 0.01)
         texture  (.load
                   (new three/TextureLoader)
                   "/images/texture.jpg")
@@ -42,7 +42,7 @@
   (let [scene @(subscribe [:db/get [:scene]])
         light (new three/PointLight 0xffffff 1)
         light-helper (new three/PointLightHelper light)]
-    (.set (.-position light) 3 3 3)
+    (.set (.-position light) 0 0 10)
     (.add scene light light-helper)
     (dispatch-sync [:db/set! path light])))
 
@@ -72,10 +72,10 @@
 (defn rotate-cube! [path]
   (let [cube @(subscribe [:db/get path])
         cube-x (-> cube .-rotation .-x)
-        cube-y (-> cube .-rotation .-y)]
+        cube-y (-> cube .-rotation .-y)]))
 
-    (set! (-> cube .-rotation .-x) (+ 0.01 cube-x))
-    (set! (-> cube .-rotation .-y) (+ 0.01 cube-y))))
+    ;(set! (-> cube .-rotation .-x) (+ 0.01 cube-x))))
+    ;(set! (-> cube .-rotation .-y) (+ 0.01 cube-y))))
 
 (defn animate! []
   (let [scene @(subscribe [:db/get [:scene]])]
