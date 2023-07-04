@@ -1,5 +1,6 @@
 (ns frontend.editor
   (:require ["three" :as three]
+            ["@three-ts/orbit-controls" :refer [OrbitControls]]
             ["react" :as react]
             [frontend.state-management]
             [re-frame.core :refer [dispatch-sync subscribe]]))
@@ -14,7 +15,12 @@
                  0.1
                  1000))
 
+(.setZ (-> camera .-position) 30)
+
+
 (def renderer (new three/WebGLRenderer))
+
+(.setPixelRatio renderer (.-devicePixelRatio js/window))
 (.setSize renderer (.-innerWidth js/window) (.-innerHeight js/window))
 
 (defn add-cube! [path]
@@ -28,11 +34,17 @@
 
 (defn add-light! [path]
   (let [scene @(subscribe [:db/get [:scene]])
-        light (new three/DirectionalLight 0xffffff)]
-    (.add scene light)
-    (set! (-> camera .-position .-z) 5)
+        light (new three/PointLight 0xffffff)
+        light-helper (new three/PointLightHelper light)]
+    (.set (.-position light) 5 5 5)
+    (.add scene light light-helper)
     (dispatch-sync [:db/set! path light])))
 
+(defn add-grid-helper! []
+  (let [scene @(subscribe [:db/get [:scene]])
+        controls (new OrbitControls camera)
+        grid-helper (new three/GridHelper 200 50)]
+    (.add scene controls grid-helper)))
 
 
 (defn add-three-js-to-dom! []
@@ -66,6 +78,7 @@
      (add-three-js-to-dom!)
      (add-cube! [:cube 1])
      (add-light! [:light 1])
+     (add-grid-helper!)
      (animate!)
      (fn []))
    #js [])
