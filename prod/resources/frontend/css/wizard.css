@@ -1,0 +1,489 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+@-webkit-keyframes wave {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 10%, 15px) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 10%, 15px) rotateZ(-360deg);
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 10%, 15px) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 10%, 15px) rotateZ(-360deg);
+  }
+}
+
+body {
+  font-family: Fira Code, monospace;
+  font-size: 15px;
+  margin: 0px;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  overflow: hidden;
+  scrollbar-width: none;
+  /* Firefox */
+
+}
+
+/*
+body::-webkit-scrollbar {
+  display: none;
+}
+*/
+#ui-editor {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+}
+
+#ui-editor::-webkit-scrollbar {
+  display: none;
+}
+
+#ui-main {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+}
+
+#ui-main::-webkit-scrollbar {
+  display: none;
+}
+
+#square-book {
+  background-image: url('/images/point.png');
+  background-size: 50px;
+}
+
+
+.hover-icon {
+  transition: 0.2s ease-in;
+}
+
+.hover-icon:hover {
+  transform: scale(1.1);
+  transition: 0.3s ease-out;
+}
+
+
+/*Jodit properties*/
+
+.jodit-workplace {
+  flex-grow: 1;
+}
+
+.jodit-react-container {
+  height: 100%;
+}
+
+.jodit-toolbar__box {
+  position: fixed;
+  top: 60px;
+  left: calc(50%);
+}
+
+.jodit-container:not(.jodit_inline) {
+  background-color: transparent;
+  border: 0px solid #dadada !important;
+  border-radius: 0px;
+}
+
+.jodit-container:not(.jodit_inline) .jodit-workplace {
+  height: 100% !important;
+  background-color: white;
+}
+
+.jodit-container:not(.jodit_inline) .jodit-wysiwyg {
+  padding: 0px !important;
+}
+
+/*.jodit-container {
+    display: flex;
+    flex-direction: column;
+    height:100%;
+    width: 100% !important;
+    min-width: 0px !important;
+}*/
+
+.jodit-react-container {
+  height: 100%;
+}
+
+.jodit-status-bar {
+  display: none !important;
+}
+
+/*Jodit properties*/
+
+
+.component-wrapper:hover > .component-menu {
+  visibility: visible;
+  opacity: 1;
+  transition: 0.3s;
+}
+
+.component-menu-button {
+  cursor: pointer;
+}
+
+.component-menu {
+  position: absolute;
+  top: -10px;
+  z-index: 1000;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+  pointer-events: auto;
+  display: flex;
+}
+
+.sidebar-button {
+  transform: scale(0.9);
+  transition: 0.3s ease-in;
+}
+
+.sidebar-button:hover {
+  transition: 0.2s ease-in;
+  transform: scale(1.0);
+}
+
+
+.wizard-component {
+  background: #666;
+  color: #FFF;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+
+  transform: scale(0.98);
+  transition: 0.2s ease-out transition;
+
+}
+
+.wizard-component:hover {
+  transition: 0.2s ease-in transition;
+  transform: scale(1);
+}
+
+.editor-particle {
+  cursor: pointer;
+  border: 1px solid #dddddeDD;
+}
+
+.overlay-button {
+  transform: scale(0.95);
+  font-size: 24px;
+  padding: 5px 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0px;
+  margin-right: 5px;
+  transition: 0.2s ease-in;
+  display: flex;
+  justify-content: center;
+}
+
+.overlay-button:hover {
+  transition: 0.2s ease-out;
+  transform: scale(1);
+}
+
+.resizeable-area {
+  background: rgb(255, 223, 39);
+  color: #333;
+  position: relative;
+}
+
+
+.layer-button {
+  position: relative;
+}
+
+.layer-button > .arrow-button {
+  opacity: 0;
+  transition: 0.3s ease-in;
+}
+
+.layer-button:hover > .arrow-button {
+  opacity: 1;
+  transition: 0.3s ease-in;
+}
+
+.layer-button:hover {
+  z-index: 1000;
+}
+
+
+.dimension:hover {
+  background: white;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+.small-wizard-inner > div {
+  min-height: 300px
+}
+
+.jodit-toolbar__box {
+  position: fixed !important;
+  top: 53px !important;
+  bottom: 100% !important;
+  left: calc(50% - 169px) !important;
+  width: 339px !important;
+  z-index: 4000;
+  height: 32px;
+}
+
+.jodit-toolbar__box:not(:empty):not(:empty) {
+  background-color: transparent !important;
+}
+
+.jodit-container:not(.jodit_inline) .jodit-workplace {
+  background-color: transparent !important;
+}
+
+.jodit-container:not(.jodit_inline) {
+  background-color: transparent !important;
+  border: 0px solid #dadada !important;
+  border-radius: 0px !important;
+}
+
+
+.layer-indicator:hover {
+  z-index:   1 !important;
+  box-shadow:
+    0 0 3px 4px #fff, 
+    0 0 5px 5px rgb(70, 146, 239),
+    0 0 6px 4px #0ff !important; 
+  transition: 0.2s ease-in;
+}
+
+
+
+.area{
+  outline-offset: -6px;
+  outline: 2px dashed #0ff;
+  box-shadow:
+    inset 0px 0 30px #f0f,  /* left magenta */
+    inset 0px 0 30px #0ff; /* right cyan */
+}
+
+.input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  font-size: 16px;
+  font-family: Helvetica, Arial, sans-serif;
+  color: #333;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.cell-input{
+  width: 50px;
+}
+
+.box-shadow-input{
+  width: 100px;
+}
+
+.link-input{
+  width: 200px;
+  text-align: left;
+}
+
+.cell-count {
+  transition: 0.2s ease;
+}
+
+.cell-count:hover {
+  background: #f2f2f2 !important;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+.cell-size {
+  transition: 0.2s ease;
+}
+
+.cell-size:hover {
+  background: #f2f2f2 !important;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+.chrome-picker {
+  box-shadow: none !important;
+}
+
+.universal-button--light{
+  background: #f2f2f2 !important;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+.universal-button--light:hover{
+  background: #333 !important;
+  color: #f2f2f2;
+  transition: 0.2s ease;
+}
+
+.universal-button--dark{
+  background: #333 !important;
+  color: #f2f2f2;
+  transition: 0.2s ease;
+}
+
+.universal-button--dark:hover{
+  background: #f2f2f2 !important;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+
+.universal-input--light{
+  background: #f2f2f2 !important;
+  color: #333;
+}
+
+.universal-input--dark{
+  background: #333 !important;
+  color: #f2f2f2;
+}
+
+
+
+
+.button-effect {
+  transition: 0.2s ease;
+  border: 1px solid #333;
+}
+
+.button-effect:hover {
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #333;
+  transition: 0.3s ease;
+}
+
+.layer-button {
+  transition: 0.2s ease;
+}
+
+.layer-button:hover {
+  transition: 0.3s ease;
+}
+
+.layer-3d-active{
+  transform: perspective(110px) rotateX(0deg) scale(1.2);
+  transition: 0.3s ease;
+  width: 60px;
+  z-index: 1000;                        
+  box-shadow: 0px 0px 8px 6px rgba(0,0,0,0.5);
+}
+
+.layer-3d-not-active{
+  transform: perspective(110px) rotateX(30deg);
+  transition: 0.3s ease; 
+  z-index: 1;   
+  box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.75);                             
+}
+
+.layer-3d-hovered{
+  transform:  perspective(110px)  rotateX(0deg) scale(1.2);
+  transition: 0.3s ease;
+
+  z-index: 1000; 
+  box-shadow: 0px 0px 8px 6px rgba(0,0,0,0.75);
+}
+
+.layer-indicator-add {
+  transform: perspective(110px) rotateX(30deg);
+  transition: 0.3s ease;
+  border-radius: 10px;
+  z-index: 900; 
+  box-shadow: 0px 0px 3px 1px rgba(255,255,255,0.75);
+}
+
+.layer-indicator-add:hover {
+  transform: perspective(110px) rotateX(0deg);
+  transition: 0.3s ease;
+
+  z-index: 10000; 
+}
+
+
+
+
+.triangle {
+	position: absolute;
+  right: 0;
+  top: 0;
+	background-color: #333;
+	text-align: left;
+}
+.triangle:before,
+.triangle:after {
+	content: '';
+	position: absolute;
+	background-color: inherit;
+}
+.triangle,
+.triangle:before,
+.triangle:after {
+	width:  17px;
+	height: 17px;
+	border-top-right-radius: 30%;
+}
+
+.triangle {
+	transform: translate(16.5px, 6.5px) rotate(30deg) skewX(-30deg) scale(1,.866);
+}
+.triangle:before {
+	transform: rotate(-135deg) skewX(-45deg) scale(1.414,.707) translate(0,-50%);
+}
+.triangle:after {
+	transform: rotate(135deg) skewY(-45deg) scale(.707,1.414) translate(50%);
+}
+
+
+
+.overlays-previewed{
+  opacity: 0;
+  transition: ease 0.2s;
+}
+
+
+.overlays-editor{
+  opacity: 1;
+  transition: ease 0.2s;
+}
+
+.ui-wrapper-preview{
+  border-radius: 0px;
+  transition: ease 0.2s;
+}
+
+.ui-wrapper-editor{
+  border-radius: 20px;
+  transition: ease 0.2s;
+}
+
+
