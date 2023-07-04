@@ -1,15 +1,11 @@
-(ns frontend.editor
-  (:require ["three" :as three]
-            ["@three-ts/orbit-controls" :refer [OrbitControls]]
-            ["three-css3d" :refer [CSS3DRenderer, CSS3DSprite, CSS3DObject]]
-            ["react" :as react]
-            [frontend.state-management]
-            [re-frame.core :refer [dispatch-sync subscribe]]
-            [frontend.webgl-renderer.core :as webgl-renderer]
-            [frontend.css-renderer.core :as css-renderer]))
+(ns frontend.webgl-renderer.core
+  (:require
+   ["three" :as three]
+   ["react" :as react]
+   ["@three-ts/orbit-controls" :refer [OrbitControls]]
+   [re-frame.core :refer [dispatch-sync subscribe]]))
 
-
-
+; Camera settings 
 
 (def camera (new three/PerspectiveCamera
                  75
@@ -21,6 +17,8 @@
 (.setZ (-> camera .-position) 15)
 
 
+; Renderer settings 
+
 (def renderer (new three/WebGLRenderer
                    #js {:antialias true
                         :alpha true}))
@@ -28,6 +26,9 @@
 (.setPixelRatio renderer (.-devicePixelRatio js/window))
 (.setSize renderer (.-innerWidth js/window) (.-innerHeight js/window))
 (.setClearColor renderer 0xffffff 0)
+
+
+; Settings up scenes
 
 (defn add-cube! [path]
   (let [scene @(subscribe [:db/get [:scene]])
@@ -55,6 +56,8 @@
         grid-helper (new three/GridHelper 200 50)]
     (.add scene controls grid-helper)))
 
+
+; Connecting webgl to the MVC model
 
 (defn add-three-js-to-dom! []
   (.appendChild
@@ -86,7 +89,20 @@
     (.requestAnimationFrame js/window animate!)
     (.render renderer scene camera)))
 
+
+; View
+
+
+(defn setup-effect []
+  (fn []
+    (add-three-js-to-dom!)
+    (add-cube! [:cube 1])
+    (add-light! [:light 1])
+    (add-grid-helper!)
+    (animate!)
+    (fn [])))
+
 (defn view []
-  [:<>
-   ;[webgl-renderer/view]
-   [css-renderer/view]])
+  (react/useEffect (setup-effect)
+                   #js [])
+  [:div#editor])

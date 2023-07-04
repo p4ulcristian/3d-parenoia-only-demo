@@ -8,6 +8,7 @@ ALL["react-dom/client"] = require("react-dom/client");
 ALL["highlight.js/lib/languages/clojure"] = require("highlight.js/lib/languages/clojure");
 ALL["react-dom"] = require("react-dom");
 ALL["highlight.js/lib/core"] = require("highlight.js/lib/core");
+ALL["three-css3d"] = require("three-css3d");
 ALL["react"] = require("react");
 global.shadow$bridge = function shadow$bridge(name) {
   var ret = ALL[name];
