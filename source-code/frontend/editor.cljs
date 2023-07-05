@@ -1,92 +1,44 @@
 (ns frontend.editor
-  (:require ["three" :as three]
-            ["@three-ts/orbit-controls" :refer [OrbitControls]]
-            ["three-css3d" :refer [CSS3DRenderer, CSS3DSprite, CSS3DObject]]
-            ["react" :as react]
-            [frontend.state-management]
-            [re-frame.core :refer [dispatch-sync subscribe]]
+  (:require [frontend.state-management]
             [frontend.webgl-renderer.core :as webgl-renderer]
-            [frontend.css-renderer.core :as css-renderer]))
+            [frontend.css-renderer.core :as css-renderer]
+            [re-frame.core :refer [dispatch-sync subscribe]]
+            ["@three-ts/orbit-controls" :refer [OrbitControls]]
+            ["three" :as three]
+            ["react" :as react]))
+
+(def ^js camera (new three/PerspectiveCamera
+                     75
+                     (/ (.-innerWidth js/window)
+                        (.-innerHeight js/window))
+                     0.1
+                     2000))
 
 
-
-
-(def camera (new three/PerspectiveCamera
-                 75
-                 (/ (.-innerWidth js/window)
-                    (.-innerHeight js/window))
-                 0.1
-                 2000))
-
-(.setZ (-> camera .-position) 15)
-
-
-(def renderer (new three/WebGLRenderer
-                   #js {:antialias true
-                        :alpha true}))
-
-(.setPixelRatio renderer (.-devicePixelRatio js/window))
-(.setSize renderer (.-innerWidth js/window) (.-innerHeight js/window))
-(.setClearColor renderer 0xffffff 0)
-
-(defn add-cube! [path]
-  (let [scene @(subscribe [:db/get [:scene]])
-        geometry (new three/BoxGeometry 5 15 0.01)
-        texture  (.load
-                  (new three/TextureLoader)
-                  "/images/texture.jpg")
-        material (new three/MeshStandardMaterial #js {:map texture})
-        cube     (new three/Mesh geometry material)]
-    (.add scene cube)
-
-    (dispatch-sync [:db/set! path cube])))
-
-(defn add-light! [path]
-  (let [scene @(subscribe [:db/get [:scene]])
-        light (new three/PointLight 0xffffff 1)
-        light-helper (new three/PointLightHelper light)]
-    (.set (.-position light) 0 0 10)
-    (.add scene light light-helper)
-    (dispatch-sync [:db/set! path light])))
+(.setZ (-> camera .-position) 30)
 
 (defn add-grid-helper! []
-  (let [scene @(subscribe [:db/get [:scene]])
+  (let [scene @(subscribe [:db/get [:webgl :scene]])
         controls (new OrbitControls camera)
         grid-helper (new three/GridHelper 200 50)]
     (.add scene controls grid-helper)))
 
-
-(defn add-three-js-to-dom! []
-  (.appendChild
-   (.-body js/document)
-   (.-domElement renderer)))
-
-(defn add-scene-to-db! []
-  (let [scene (new three/Scene)
-        space-texture (.load
-                       (new three/TextureLoader)
-                       "/images/background.jpg")]
-    (set! (.-background scene) space-texture)
-    (dispatch-sync [:db/set! [:scene] scene])))
-
-(add-scene-to-db!)
-
-
-(defn rotate-cube! [path]
-  (let [cube @(subscribe [:db/get path])
-        cube-x (-> cube .-rotation .-x)
-        cube-y (-> cube .-rotation .-y)]))
-
-    ;(set! (-> cube .-rotation .-x) (+ 0.01 cube-x))))
-    ;(set! (-> cube .-rotation .-y) (+ 0.01 cube-y))))
-
 (defn animate! []
-  (let [scene @(subscribe [:db/get [:scene]])]
-    (rotate-cube! [:cube 1])
+  (let [webgl-scene     @(subscribe [:db/get [:webgl :scene]])
+        webgl-renderer  @(subscribe [:db/get [:webgl :renderer]])
+        css3d-scene     @(subscribe [:db/get [:css3d :scene]])
+        css3d-renderer  @(subscribe [:db/get [:css3d :renderer]])]
+    ;(webgl-renderer/rotate-cube! [:cube 1])
     (.requestAnimationFrame js/window animate!)
-    (.render renderer scene camera)))
+    (.render ^js webgl-renderer webgl-scene camera)
+    (.render ^js css3d-renderer css3d-scene camera)))
 
 (defn view []
-  [:<>
-   ;[webgl-renderer/view]
-   [css-renderer/view]])
+  (react/useEffect (fn []
+                     (animate!)
+                     (add-grid-helper!)
+                     (fn []))
+                   #js [])
+  [:div
+   [css-renderer/view]
+   [webgl-renderer/view]])
