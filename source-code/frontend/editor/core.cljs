@@ -21,6 +21,33 @@
                                                    :type :file
                                                    :content "Na mostmar"}}}})
 
+
+(defn light []
+  (let [id (str (random-uuid))]
+    (react/useEffect
+     (fn []
+       (webgl-renderer/add-light! {:path [:editor :lights id]
+                                   :position [0 0 30]})
+       (fn []))
+     #js [])
+    [:<>]))
+
+(defn cube-with-text []
+  (let [id (str (random-uuid))]
+    (react/useEffect
+     (fn []
+       (webgl-renderer/add-page! {:path [:editor :files id :webgl]
+                                  :width  500
+                                  :height 500})
+       (fn []))
+     #js [])
+    [:<>
+     [css-renderer/page-portal {:path [:editor :files id :css3d]
+                                :id id
+                                :width 500
+                                :height 500}]]))
+
+
 (defn view []
   (react/useEffect (fn []
                      (dispatch-sync [:db/set! [:files] file-structure])
@@ -30,4 +57,6 @@
   [:div#editor
    (str @(subscribe [:db/get []]))
    [css-renderer/view]
-   [webgl-renderer/view]])
+   [webgl-renderer/view]
+   [light]
+   [cube-with-text]])

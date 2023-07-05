@@ -21,30 +21,30 @@
      (.-domElement ^js renderer))))
 
 
-(defn lorem-ipsum [id]
-  [:div.lorem-ipsum
+
+(defn page-dom-element-reagent [id width height]
+  [:div
    {:id id
-    :style {:width "500px"
-            :height "1000px"
+    :style {:width width
+            :height height
             :overflow-y :scroll}}])
 
-(defn fancy-html [id]
+(defn page-dom-element [id width height]
   (let [html-string (reagent-server/render-to-string
-                     [lorem-ipsum id])
+                     [page-dom-element-reagent id width height])
         dom-element  (js/document.createElement "div")]
     (set! (.-innerHTML dom-element) html-string)
     dom-element))
 
 
-(defn add-css3d-object! []
+(defn add-page! [{:keys [path  id width height]}]
   (let [scene @(subscribe [:db/get [:css3d :scene]])
-        css3d-object-id  (str (random-uuid))
-        css-object  (new CSS3DObject (fancy-html css3d-object-id))]
+        css-object  (new CSS3DObject (page-dom-element id width height))]
     (.add scene css-object)
     (dispatch-sync [:db/set!
                     [:css3d :scene-elements :text 1]
                     {:element css-object
-                     :id css3d-object-id}])))
+                     :id id}])))
 
 (defn add-scene-to-db! []
   (let [scene (new three/Scene)]
@@ -67,7 +67,6 @@
 (defn setup-effect []
   (fn []
     (append-to-canvas!)
-    (add-css3d-object!)
     (fn [])))
 
 
@@ -80,30 +79,41 @@
                     1000)
        (fn []))
      #js [count])
-    [:div
-     {:style {:padding "20px"
-              :display :flex
-              :justify-content :center
-              :color "yellow"
+    [:div#timer
+     {:style {:color "yellow"
               :text-shadow "2px 2px #ff0000"
               :font-size "30px"}}
      [:div (str count)]]))
 
-(defn edit-portal [id]
-  (let [element (try (js/document.getElementById id)
-                     (catch js/Error e (fn [e] nil)))]
-    (react-dom/createPortal
-     (reagent/as-element
-      [:div {:style
-             (merge
-              {:position :absolute
-               :pointer-events :none
-               :top 0
-               :left 0
-               :width "100%"
-               :height "100%"})}
-       [timer]])
-     element)))
+(defn page-portal [{:keys [id path width height]}]
+  (let [element (fn [] (try (js/document.getElementById id)
+                            (catch js/Error e (fn [e] nil))))
+        [element? set-element?] (react/useState false)]
+    (when-not element?
+      (add-page! {:path [:editor :files :css3d id]
+                  :width  width
+                  :id id
+                  :height height}))
+    (react/useEffect (fn []
+                       (set-element? true)
+                       (fn []))
+                     #js [])
+    (when (element)
+      [:<>
+       (react-dom/createPortal
+        (reagent/as-element
+         [:div {:style
+                {:position :absolute
+                 :pointer-events :none
+                 :top 0
+                 :left 0
+                 :width "100%"
+                 :height "100%"
+                 :display :flex
+                 :justify-content :center
+                 :align-content :center}}
+          [timer]])
+        (element))])))
 
 
 (defn view []
@@ -116,5 +126,4 @@
                                  :width "100%"
                                  :height "100%"
                                  :z-index 2}}
-     (println id)
-     (when id [edit-portal id])]))
+     (println id)]))

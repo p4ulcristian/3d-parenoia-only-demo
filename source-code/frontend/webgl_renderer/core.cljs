@@ -13,26 +13,23 @@
 
 ; Settings up scenes
 
-(defn add-cube! [{:keys [path position]}]
-  (let [[depth index] position
-        scene @(subscribe [:db/get [:webgl :scene]])
-        geometry (new three/BoxGeometry 500 1000 0.01)
+(defn add-page! [{:keys [path width height]}]
+  (let [scene    @(subscribe [:db/get [:webgl :scene]])
+        geometry (new three/BoxGeometry 500 500 0.01)
         texture  (.load
                   (new three/TextureLoader)
                   "/images/texture.jpg")
         material (new three/MeshStandardMaterial #js {:map texture})
         cube     (new three/Mesh geometry material)]
-    (.setX (.-position cube) (* index 700))
-    (.setZ (.-position cube) (* depth -700))
     (.add scene cube)
+    cube))
 
-    (dispatch-sync [:db/set! path cube])))
-
-(defn add-light! [path]
-  (let [scene @(subscribe [:db/get [:webgl :scene]])
+(defn add-light! [{:keys [path position]}]
+  (let [[x y z] position
+        scene @(subscribe [:db/get [:webgl :scene]])
         light (new three/PointLight 0xffffff 1)
         light-helper (new three/PointLightHelper light)]
-    (.set (.-position light) 0 0 10)
+    (.set (.-position light) x y z)
     (.add scene light light-helper)
     (dispatch-sync [:db/set! path light])))
 
@@ -77,19 +74,19 @@
 (defn setup-effect []
   (fn []
     (append-to-canvas!)
-    (add-cube! {:path [:cube 1]
-                :position [0 0]})
-    (add-cube! {:path [:cube 1]
-                :position [0 1]})
-    (add-cube! {:path [:cube 1]
-                :position [0 2]})
-    (add-cube! {:path [:cube 1]
-                :position [1 0]})
-    (add-cube! {:path [:cube 1]
-                :position [2 0]})
-    (add-cube! {:path [:cube 1]
-                :position [2 0]})
-    (add-light! [:light 1])
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [0 0]})
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [0 1]})
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [0 2]})
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [1 0]})
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [2 0]})
+    ;; (add-page! {:path [:cube 1]
+    ;;             :position [2 0]})
+    ;; (add-light! [:light 1])
     (fn [])))
 
 (defn view []
