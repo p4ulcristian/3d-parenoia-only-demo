@@ -13,14 +13,19 @@
 
 ; Settings up scenes
 
-(defn add-page! [{:keys [path width height]}]
+(defn add-page! [{:keys [path width height position]}]
   (let [scene    @(subscribe [:db/get [:webgl :scene]])
-        geometry (new three/BoxGeometry 500 500 0.01)
+        geometry (new three/BoxGeometry width height 0.01)
         texture  (.load
                   (new three/TextureLoader)
                   "/images/texture.jpg")
         material (new three/MeshStandardMaterial #js {:map texture})
-        cube     (new three/Mesh geometry material)]
+        cube     (new three/Mesh geometry material)
+        [x y z] position]
+
+    (.setX (.-position cube) x)
+    (.setY (.-position cube) y)
+    (.setZ (.-position cube) z)
     (.add scene cube)
     cube))
 

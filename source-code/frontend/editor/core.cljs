@@ -32,20 +32,22 @@
      #js [])
     [:<>]))
 
-(defn cube-with-text []
+(defn cube-with-text [{:keys [width height position]}]
   (let [id (str (random-uuid))]
     (react/useEffect
      (fn []
        (webgl-renderer/add-page! {:path [:editor :files id :webgl]
-                                  :width  500
-                                  :height 500})
+                                  :width  width
+                                  :height height
+                                  :position position})
        (fn []))
      #js [])
     [:<>
      [css-renderer/page-portal {:path [:editor :files id :css3d]
                                 :id id
-                                :width 500
-                                :height 500}]]))
+                                :width width
+                                :height height
+                                :position position}]]))
 
 
 (defn view []
@@ -59,4 +61,25 @@
    [css-renderer/view]
    [webgl-renderer/view]
    [light]
-   [cube-with-text]])
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [0 0 0]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [700 0 0]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [1400 0 0]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [2100 0 0]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [0 0 -700]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [0 0 -1400]}]
+   [cube-with-text {:width 500
+                    :height 500
+                    :position [0 0 -2100]}]])
+   ;[cube-with-text {:position [700 0 0]}]])
