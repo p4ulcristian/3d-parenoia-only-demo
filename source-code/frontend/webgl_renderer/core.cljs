@@ -15,7 +15,7 @@
 
 (defn add-cube! [path]
   (let [scene @(subscribe [:db/get [:webgl :scene]])
-        geometry (new three/BoxGeometry 5 15 0.01)
+        geometry (new three/BoxGeometry 500 1000 0.01)
         texture  (.load
                   (new three/TextureLoader)
                   "/images/texture.jpg")
@@ -63,13 +63,7 @@
 (add-renderer-to-db!)
 
 
-(defn rotate-cube! [path]
-  (let [cube @(subscribe [:db/get path])
-        cube-x (-> cube .-rotation .-x)
-        cube-y (-> cube .-rotation .-y)]
 
-    (set! (-> cube .-rotation .-x) (+ 0.01 cube-x))
-    (set! (-> cube .-rotation .-y) (+ 0.01 cube-y))))
 
 
 ; View

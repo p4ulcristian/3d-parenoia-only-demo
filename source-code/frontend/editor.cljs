@@ -5,7 +5,8 @@
             [re-frame.core :refer [dispatch-sync subscribe]]
             ["@three-ts/orbit-controls" :refer [OrbitControls]]
             ["three" :as three]
-            ["react" :as react]))
+            ["react" :as react]
+            [frontend.animations.core :as animations]))
 
 (def ^js camera (new three/PerspectiveCamera
                      75
@@ -28,7 +29,8 @@
         webgl-renderer  @(subscribe [:db/get [:webgl :renderer]])
         css3d-scene     @(subscribe [:db/get [:css3d :scene]])
         css3d-renderer  @(subscribe [:db/get [:css3d :renderer]])]
-    ;(webgl-renderer/rotate-cube! [:cube 1])
+    (animations/rotate-object! [:cube 1])
+    (animations/rotate-object! [:text 1])
     (.requestAnimationFrame js/window animate!)
     (.render ^js webgl-renderer webgl-scene camera)
     (.render ^js css3d-renderer css3d-scene camera)))
