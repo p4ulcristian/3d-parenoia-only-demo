@@ -88,7 +88,7 @@
     (add-cube! {:path [:cube 1]
                 :position [2 0]})
     (add-cube! {:path [:cube 1]
-                :position [2 1]})
+                :position [2 0]})
     (add-light! [:light 1])
     (fn [])))
 
