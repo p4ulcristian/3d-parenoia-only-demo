@@ -4,7 +4,8 @@
    ["react" :as react]
    ["@three-ts/orbit-controls" :refer [OrbitControls]]
    ["three-css3d" :refer [CSS3DRenderer, CSS3DSprite, CSS3DObject]]
-   [re-frame.core :refer [dispatch-sync subscribe]]))
+   [re-frame.core :refer [dispatch-sync subscribe]]
+   [reagent.dom.server :as reagent-server]))
 
 ; Renderer settings 
 
@@ -20,11 +21,18 @@
      (.getElementById js/document "css-container")
      (.-domElement ^js renderer))))
 
+
+(defn fancy-html []
+  (let [html-string (reagent-server/render-to-string
+                     [:div "hello there"])
+        dom-element  (js/document.createElement "div")]
+    (set! (.-innerHTML dom-element) html-string)
+    dom-element))
+
+
 (defn add-scene-to-db! []
   (let [scene (new three/Scene)
-        dom-element (js/document.createElement "div")
-        set-html!   (set! (.-innerHTML dom-element) "Hello")
-        css-object  (new CSS3DObject dom-element)]
+        css-object  (new CSS3DObject (fancy-html))]
     (.add scene css-object)
     (dispatch-sync [:db/set! [:css3d :scene] scene])))
 

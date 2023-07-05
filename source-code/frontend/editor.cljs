@@ -12,10 +12,10 @@
                      (/ (.-innerWidth js/window)
                         (.-innerHeight js/window))
                      0.1
-                     2000))
+                     5000))
 
 
-(.setZ (-> camera .-position) 30)
+(.setZ (-> camera .-position) 50)
 
 (defn add-grid-helper! []
   (let [scene @(subscribe [:db/get [:webgl :scene]])
