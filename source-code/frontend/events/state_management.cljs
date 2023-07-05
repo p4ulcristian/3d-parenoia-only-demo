@@ -1,4 +1,4 @@
-(ns frontend.state-management
+(ns frontend.events.state-management
   (:require [re-frame.core :refer [subscribe dispatch reg-event-db reg-sub]]))
 
 (reg-event-db

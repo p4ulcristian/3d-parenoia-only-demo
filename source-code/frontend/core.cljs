@@ -2,7 +2,8 @@
   (:require [reagent.dom :as reagent-dom]
             [reagent.core :as reagent]
             ["react-dom/client" :as react-client]
-            [frontend.editor :as editor]
+            [frontend.events.state-management]
+            [frontend.editor.core :as editor]
             [reagent.impl.template :as reagent-template]))
 
 (def functional-compiler (reagent/create-compiler {:function-components true}))
