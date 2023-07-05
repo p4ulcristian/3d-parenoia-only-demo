@@ -35,8 +35,29 @@
     (.render ^js webgl-renderer webgl-scene camera)
     (.render ^js css3d-renderer css3d-scene camera)))
 
+
+
+(defn id []
+  (keyword (str (random-uuid))))
+
+(id)
+
+(def file-structure
+  {:4a9281ed-30d6-4f96-8fa0-b2e536590be7 {:name "backend"
+                                          :type :folder
+                                          :files {:0f77162d-de35-4ff3-861d-2a7431869101 {:name "core.cljs"
+                                                                                         :type :file
+                                                                                         :content "Hello world"}}}
+   :ad5d44cf-7061-428b-a7e6-84a812097b7c {:name "frontend"
+                                          :type :folder
+                                          :files {:5b362892-f752-4d9e-94e7-83f76fbeb600 {:name "core.cljs"
+                                                                                         :type :file
+                                                                                         :content "Na mostmar"}}}})
+
+
 (defn view []
   (react/useEffect (fn []
+                     (dispatch-sync [:db/set! [:files] file-structure])
                      (animate!)
                      (add-grid-helper!)
                      (fn []))

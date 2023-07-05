@@ -13,14 +13,17 @@
 
 ; Settings up scenes
 
-(defn add-cube! [path]
-  (let [scene @(subscribe [:db/get [:webgl :scene]])
+(defn add-cube! [{:keys [path position]}]
+  (let [[depth index] position
+        scene @(subscribe [:db/get [:webgl :scene]])
         geometry (new three/BoxGeometry 500 1000 0.01)
         texture  (.load
                   (new three/TextureLoader)
                   "/images/texture.jpg")
         material (new three/MeshStandardMaterial #js {:map texture})
         cube     (new three/Mesh geometry material)]
+    (.setX (.-position cube) (* index 700))
+    (.setZ (.-position cube) (* depth -700))
     (.add scene cube)
 
     (dispatch-sync [:db/set! path cube])))
@@ -69,10 +72,23 @@
 ; View
 
 
+(defn process-file-structure [file-structure])
+
 (defn setup-effect []
   (fn []
     (append-to-canvas!)
-    (add-cube! [:cube 1])
+    (add-cube! {:path [:cube 1]
+                :position [0 0]})
+    (add-cube! {:path [:cube 1]
+                :position [0 1]})
+    (add-cube! {:path [:cube 1]
+                :position [0 2]})
+    (add-cube! {:path [:cube 1]
+                :position [1 0]})
+    (add-cube! {:path [:cube 1]
+                :position [2 0]})
+    (add-cube! {:path [:cube 1]
+                :position [2 1]})
     (add-light! [:light 1])
     (fn [])))
 

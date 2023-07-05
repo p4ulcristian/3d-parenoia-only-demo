@@ -6,3 +6,4 @@ node_modules
 resources/frontend/js
 resources/backend/core.js
 .DS_Store
+.calva
