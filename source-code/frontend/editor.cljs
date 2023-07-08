@@ -61,7 +61,7 @@
         html-width (* 100 box-width)
         html-height (* 100 box-height)
         offset-position (let [[x y z]  position]
-                          [x y (+ z 0.1)])]
+                          [x y (+ z 0.2)])]
     (useEffect (fn []
                  (let []
 
@@ -81,12 +81,13 @@
       ;;  [:mesh
       ;;   [:planeBufferGeometry]
       ;;   [:meshBasicMaterial {:color "green" :side DoubleSide}]]]
-      [:> Center
-       [:> Text3D {:font "/fonts/fragment-mono.json"
-                   :letterSpacing -0.06
-                   :size 0.5}
-        "hello \n  three"
-        [:meshNormalMaterial]]]
+      [:group {:position offset-position}
+       [:> Center
+        [:> Text3D {:font "/fonts/fragment-mono.json"
+                    :letterSpacing -0.06
+                    :size 0.5}
+         "hello \n  three"
+         [:meshNormalMaterial]]]]
 
       (comment [:f> html-component {:text  text
                                     :width html-width
@@ -118,11 +119,11 @@
    ;[:ambientLight {:intensity 0.1}]
    [:> OrbitControls {:makeDefault true}]
    [:f> lights]
-   [:mesh {:rotation [(- 1.5) 0 0] :position [0 -1.5 0]
+   [:mesh {:rotation [0 0 0] :position [0 -1.5 0]
            :receiveShadow true}
     [:planeGeometry {:args [7 7]}]
-
-    [:meshPhongMaterial {:color "blue"}]]
+    [:meshPhongMaterial {:color "blue"
+                         :side DoubleSide}]]
    [:f> box {:text "Wow"
              :size [1 1]
              :position [-1.5 1 -0.5]
