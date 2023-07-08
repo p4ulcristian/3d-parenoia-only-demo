@@ -61,37 +61,25 @@
         html-width (* 100 box-width)
         html-height (* 100 box-height)
         offset-position (let [[x y z]  position]
-                          [x y (+ z 0.2)])]
+                          [(- x 3.5)
+                           (- (+ 3.5 y) 0.5)
+                           (+ z 0.05)])]
     (useEffect (fn []
                  (let []
 
                    (.log js/console "hello: " (get-size-in-px 1)))
                  (fn []))
                #js [])
-    [:<>
-     [:> Suspense {:fallback nil}
-      ;; [:group {:position position}
-      ;; ;;  [:mesh {:ref box-ref :castShadow true :receiveShadow true}
-      ;; ;;   [:> RoundedBox {:args [box-width box-height 1] :castShadow true :receiveShadow true}
-      ;; ;;    [:meshPhongMaterial {:color color
-      ;; ;;                         :attach "material"
-      ;; ;;                         :roughness 1
-      ;; ;;                         :metalness 0.1}]]]
+    [:group {:position offset-position}
+     [:> Text3D {:font "/fonts/fragment-mono.json"
+                  ;:letterSpacing -0.06
+                 :size 0.5}
+      "hello \n  three"
+      [:meshNormalMaterial]]]))
 
-      ;;  [:mesh
-      ;;   [:planeBufferGeometry]
-      ;;   [:meshBasicMaterial {:color "green" :side DoubleSide}]]]
-      [:group {:position offset-position}
-       [:> Center
-        [:> Text3D {:font "/fonts/fragment-mono.json"
-                    :letterSpacing -0.06
-                    :size 0.5}
-         "hello \n  three"
-         [:meshNormalMaterial]]]]
-
-      (comment [:f> html-component {:text  text
-                                    :width html-width
-                                    :height html-height}])]]))
+    ;;  (comment [:f> html-component {:text  text
+    ;;                                :width html-width
+    ;;                                :height html-height}])]))
 
 
 (defn lights []
@@ -119,31 +107,21 @@
    ;[:ambientLight {:intensity 0.1}]
    [:> OrbitControls {:makeDefault true}]
    [:f> lights]
-   [:mesh {:rotation [0 0 0] :position [0 -1.5 0]
-           :receiveShadow true}
+   [:mesh {:rotation [0 0 0]
+           :position [0 0 0]
+           :receiveShadow true
+           :onPointerDown (fn [e]
+                            (.log js/console (.-point ^js e)))}
     [:planeGeometry {:args [7 7]}]
     [:meshPhongMaterial {:color "blue"
-                         :side DoubleSide}]]
-   [:f> box {:text "Wow"
-             :size [1 1]
-             :position [-1.5 1 -0.5]
-             :color "pink"}]
-   [:f> box {:text "cubes"
-             :size [1 2]
-             :position [0 0 0]
-             :color "yellow"}]
-   [:f> box {:text "such"
-             :size [1 1]
-             :position [0.5 2 0]
-             :color "deeppink"}]
-   [:f> box {:text "bro"
-             :size [1 1]
-             :position [-1.5 -1 0]
-             :color "red"}]
-   [:f> box {:text "bro"
-             :size [1 1]
-             :position [-3 3 0]
-             :color "lightblue"}]])
+                         :side DoubleSide
+                         :opacity 0.3
+                         :transparent true}]
+    [:f> box {:text "cubes"
+              :size [1 2]
+              :position [0 0 0]
+              :color "yellow"}]]])
+
 
     ;; [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
     ;;             :userData {:id "floor"}}]
