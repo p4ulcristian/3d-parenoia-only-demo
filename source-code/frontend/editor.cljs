@@ -134,7 +134,7 @@
                                                ;:bevelSize 0.2
                                                ;:bevelOffset 0
                                                ;:bevelSegments 1})
-        material (THREE/MeshPhongMaterial.)]
+        material (THREE/MeshPhongMaterial. #js {:color "#333"})]
     (useEffect
      (fn []
        (let [dummy (THREE/Object3D.)]
@@ -246,14 +246,14 @@
     [canvas
      {:dpr [1 2]
       :shadows true
-      :camera {:position [0 0 100]
+      :camera {:position [0 0 150]
                :near 0.1
                :far 2000
                :fov 50}}
-     [:fog {:attach "fog" :args ["white" 0 350]}]
+     ;[:fog {:attach "fog" :args ["white" 0 350]}]
      [sky {:sun-position [100 10 100] :scale 1000}]
      [:ambientLight {:intensity 0.1}]
-     [:> OrbitControls {:makeDefault true}]
+     ;[:> OrbitControls {:makeDefault true}]
      [:f> lights]
      [page-box [page-width page-height]]
      [suspense {:fallback nil}
