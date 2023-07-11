@@ -118,7 +118,7 @@
 ;;        [:meshPhongMaterial {:color "#333"}]]]]))
 
 
-(defn thing [{:keys [letter positions]}]
+(defn render-letter [{:keys [letter positions]}]
   (let [ref  (useRef nil)
         ;a (.log js/console "h " FontLoader)
         font (useLoader FontLoader "/fonts/font.json")
@@ -140,7 +140,7 @@
            (do
              (.set (.-position dummy)
                    col-index
-                   (* 1.7 row-index)
+                   (- (* 1.7 row-index))
                    0)
              (.updateMatrix dummy)
              (.setMatrixAt
@@ -194,6 +194,46 @@
                         :opacity 0.3
                         :transparent true}]])
 
+
+
+(defn get-letter-positions [text letter]
+  (:result
+   (reduce
+    (fn [{:keys [col-index row-index result]} this]
+      (cond
+        (= this letter) {:col-index      (inc col-index)
+                         :row-index      row-index
+                         :result         (vec (conj result [row-index col-index]))}
+        (= this "\n")   {:col-index      0
+                         :row-index      (inc row-index)
+                         :result         result}
+        :else           {:col-index      (inc col-index)
+                         :row-index      row-index
+                         :result         result}))
+    {:col-index  0
+     :row-index  0
+     :result []}
+    text)))
+
+
+(defn text->letter-with-positions [text]
+  (let [available-letters (vec (set text))]
+    (map
+     (fn [letter] {:letter letter
+                   :positions (get-letter-positions text letter)})
+     available-letters)))
+
+
+
+(defn render-text [text]
+  (let [letter-with-positions (text->letter-with-positions text)]
+    [:<>
+     (map-indexed
+      (fn [index letter-position]
+        [render-letter letter-position])
+      letter-with-positions)]))
+
+
 (defn view []
   (let [page-width  100
         page-height 1000]
@@ -204,32 +244,11 @@
                :near 0.1
                :far 2000
                :fov 50}}
-  ;;  [:fog {:attach "fog" :args ["white" 0 350]}]
+     [:fog {:attach "fog" :args ["white" 0 350]}]
      [sky {:sun-position [100 10 100] :scale 1000}]
-    ;;  [:> Text {:font  "/fonts/font.ttf"
-    ;;                  ;:letterSpacing -0.06
-    ;;            :fontSize 1.5
-    ;;            :maxWidth 7}
-    ;;   "hello theres"]
-      ;[:meshPhongMaterial {:color "#333"}]]
-   ;[:ambientLight {:intensity 0.1}]
+     [:ambientLight {:intensity 0.1}]
      [:> OrbitControls {:makeDefault true}]
      [:f> lights]
-     [page-box [page-width page-height]]
+    ; [page-box [page-width page-height]]
      [suspense {:fallback nil}
-      [thing {:letter "H"
-              :positions [[0 0]
-                          [1 2]
-                          [1 3]
-                          [1 4]
-                          [2 2]]}]]]))
-     ;[text-iterator demo-text page-width]]))
-
-
-
-    ;; [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
-    ;;             :userData {:id "floor"}}]
-    ;; [:f> vehicle {:rotation [0 (/ js/Math.PI 2) 0]
-    ;;               :position [0 2 0]
-    ;;               :angularVelocity [0 0.5 0]
-    ;;               :wheelRadius 0.3}]]])
+      [render-text demo-text]]]))
