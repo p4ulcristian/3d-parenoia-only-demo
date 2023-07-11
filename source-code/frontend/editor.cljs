@@ -169,10 +169,9 @@
      [:instancedMesh {:ref text-ref
                       :args #js [text-geometry text-material (count positions)]}]
      [:instancedMesh {:ref background-ref
-                      :args #js [background-geometry background-material (count positions)]}]]))
-
-                      ;; :onPointerDown (fn [e]
-                      ;;                  (.log js/console (.-point ^js e)))}]]))
+                      :args #js [background-geometry background-material (count positions)]
+                      :onPointerDown (fn [e]
+                                       (.log js/console (.-point ^js e)))}]]))
 
 
 ;; (defn text-iterator [text row-length]
@@ -277,4 +276,4 @@
       [render-text
        {:page-width page-width
         :page-height page-height
-        :text "h"}]]]))
+        :text "hello\n there"}]]]))
