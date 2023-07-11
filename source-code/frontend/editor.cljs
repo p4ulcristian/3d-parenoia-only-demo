@@ -9,8 +9,9 @@
             ["three" :as THREE :refer [DoubleSide]]
             ["three/addons/loaders/FontLoader.js" :refer [FontLoader]]
             ["three/addons/geometries/TextGeometry.js" :refer [TextGeometry]]
+            ["three/addons/utils/BufferGeometryUtils.js" :as BufferGeometryUtils :refer [mergeGeometries]]
+           ; ["three/examples/jsm/utils/BufferGeometryUtils.js" :refer [BufferGeometryUtils]]
             [re-frame.core :refer [dispatch subscribe]]
-
             [reagent.core :as r]))
 
 (def demo-text
@@ -119,43 +120,59 @@
 
 
 (defn render-letter [{:keys [letter positions page-width page-height]}]
-  (let [ref  (useRef nil)
+  (let [text-ref  (useRef)
+        background-ref  (useRef)
         ;a (.log js/console "h " FontLoader)
         offset-left (- (/ page-width 2))
         offset-top  (- (/ page-height 2))
         font (useLoader FontLoader "/fonts/font.json")
         index (r/atom 0)
-        geometry (new TextGeometry letter #js {:font font
-                                               :size 1.2
-                                               :height 0.1})
+        background-geometry (new THREE/PlaneGeometry 2 3)
+        text-geometry (new TextGeometry letter #js {:font font
+                                                    :size 1.2
+                                                    :height 0.1})
                                                ;:curveSegments 12})
                                                ;:bevelEnabled true
                                                ;:bevelThickness 0.1
                                                ;:bevelSize 0.2
                                                ;:bevelOffset 0
-                                               ;:bevelSegments 1})
-        material (THREE/MeshPhongMaterial. #js {:color "#333"})]
+                                               ;:bevelSegments 1}) 
+        text-material (THREE/MeshPhongMaterial. #js {:color "#333"})
+        background-material (THREE/MeshPhongMaterial. #js {:color "red" :opacity 0.6})]
     (useEffect
      (fn []
-       (let [dummy (THREE/Object3D.)]
+       (let [dummy-1 (THREE/Object3D.)
+             dummy-2 (THREE/Object3D.)]
          (doseq [[row-index col-index] positions]
            (do
              (println (+ (- (* 1.7 row-index)) offset-top))
-             (.set (.-position dummy)
+             (.set (.-position dummy-1)
                    (+ offset-left col-index)
                    (- (- (* 1.7 row-index)) offset-top 1.7)
                    0)
-             (.updateMatrix dummy)
-             (.setMatrixAt
-              (-> ref .-current)
-              @index
-              (.-matrix dummy))
+             (.set (.-position dummy-2)
+                   (+ 0.5 (+ offset-left col-index))
+                   (- (- (* 1.7 row-index)) offset-top 1.3)
+                   0)
+             (.updateMatrix dummy-1)
+             (.updateMatrix dummy-2)
+             (.setMatrixAt (-> text-ref .-current)
+                           @index
+                           (.-matrix dummy-1))
+             (.setMatrixAt (-> background-ref .-current)
+                           @index
+                           (.-matrix dummy-2))
              (swap! index inc))))
        (fn []))
      #js [])
     [:<>
-     [:instancedMesh {:ref ref
-                      :args #js [geometry material (count positions)]}]]))
+     [:instancedMesh {:ref text-ref
+                      :args #js [text-geometry text-material (count positions)]}]
+     [:instancedMesh {:ref background-ref
+                      :args #js [background-geometry background-material (count positions)]}]]))
+
+                      ;; :onPointerDown (fn [e]
+                      ;;                  (.log js/console (.-point ^js e)))}]]))
 
 
 ;; (defn text-iterator [text row-length]
@@ -187,10 +204,10 @@
 
 (defn page-box [[page-width page-height]]
   [:mesh {:rotation [0 0 0]
-          :position [0 0 0]
-          :receiveShadow true
-          :onPointerDown (fn [e]
-                           (.log js/console (.-point ^js e)))}
+          :position [0 0 -1]
+          :receiveShadow true}
+          ;; :onPointerDown (fn [e]
+          ;;                  (.log js/console (.-point ^js e)))}
    [:planeGeometry {:args [page-width page-height]}]
    [:meshPhongMaterial {:color "blue"
                         :side DoubleSide
@@ -253,11 +270,11 @@
      ;[:fog {:attach "fog" :args ["white" 0 350]}]
      [sky {:sun-position [100 10 100] :scale 1000}]
      [:ambientLight {:intensity 0.1}]
-     ;[:> OrbitControls {:makeDefault true}]
+     [:> OrbitControls {:makeDefault true}]
      [:f> lights]
      [page-box [page-width page-height]]
      [suspense {:fallback nil}
       [render-text
        {:page-width page-width
         :page-height page-height
-        :text demo-text}]]]))
+        :text "h"}]]]))

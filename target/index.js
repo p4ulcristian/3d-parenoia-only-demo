@@ -4,6 +4,7 @@
 var ALL = {};
 ALL["@react-three/fiber"] = require("@react-three/fiber");
 ALL["three"] = require("three");
+ALL["three/addons/utils/BufferGeometryUtils.js"] = require("three/addons/utils/BufferGeometryUtils.js");
 ALL["react-dom/client"] = require("react-dom/client");
 ALL["three/addons/geometries/TextGeometry.js"] = require("three/addons/geometries/TextGeometry.js");
 ALL["highlight.js/lib/languages/clojure"] = require("highlight.js/lib/languages/clojure");
