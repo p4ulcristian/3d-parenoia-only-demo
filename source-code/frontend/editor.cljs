@@ -276,4 +276,4 @@
       [render-text
        {:page-width page-width
         :page-height page-height
-        :text "hello\n there"}]]]))
+        :text demo-text}]]]))
