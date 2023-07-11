@@ -118,28 +118,30 @@
 ;;        [:meshPhongMaterial {:color "#333"}]]]]))
 
 
-(defn thing []
+(defn thing [{:keys [letter positions]}]
   (let [ref  (useRef nil)
         ;a (.log js/console "h " FontLoader)
         font (useLoader FontLoader "/fonts/font.json")
-        count 100
         index (r/atom 0)
-        geometry (new TextGeometry "B" #js {:font font
-                                            :size 0.2
-                                            :height 0.1
-                                            :curveSegments 12
-                                            :bevelEnabled true
-                                            :bevelThickness 0.1
-                                            :bevelSize 0.2
-                                            :bevelOffset 0
-                                            :bevelSegments 1})
+        geometry (new TextGeometry letter #js {:font font
+                                               :size 1.2
+                                               :height 0.1})
+                                               ;:curveSegments 12})
+                                               ;:bevelEnabled true
+                                               ;:bevelThickness 0.1
+                                               ;:bevelSize 0.2
+                                               ;:bevelOffset 0
+                                               ;:bevelSegments 1})
         material (THREE/MeshNormalMaterial.)]
     (useEffect
      (fn []
        (let [dummy (THREE/Object3D.)]
-         (dotimes [x count]
+         (doseq [[row-index col-index] positions]
            (do
-             (.set (.-position dummy) x 0 0)
+             (.set (.-position dummy)
+                   col-index
+                   (* 1.7 row-index)
+                   0)
              (.updateMatrix dummy)
              (.setMatrixAt
               (-> ref .-current)
@@ -150,7 +152,7 @@
      #js [])
     [:<>
      [:instancedMesh {:ref ref
-                      :args #js [geometry material count]}]]))
+                      :args #js [geometry material (count positions)]}]]))
 
 
 ;; (defn text-iterator [text row-length]
@@ -215,7 +217,12 @@
      [:f> lights]
      [page-box [page-width page-height]]
      [suspense {:fallback nil}
-      [thing]]]))
+      [thing {:letter "H"
+              :positions [[0 0]
+                          [1 2]
+                          [1 3]
+                          [1 4]
+                          [2 2]]}]]]))
      ;[text-iterator demo-text page-width]]))
 
 
