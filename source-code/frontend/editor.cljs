@@ -118,9 +118,11 @@
 ;;        [:meshPhongMaterial {:color "#333"}]]]]))
 
 
-(defn render-letter [{:keys [letter positions]}]
+(defn render-letter [{:keys [letter positions page-width page-height]}]
   (let [ref  (useRef nil)
         ;a (.log js/console "h " FontLoader)
+        offset-left (- (/ page-width 2))
+        offset-top  (- (/ page-height 2))
         font (useLoader FontLoader "/fonts/font.json")
         index (r/atom 0)
         geometry (new TextGeometry letter #js {:font font
@@ -132,15 +134,16 @@
                                                ;:bevelSize 0.2
                                                ;:bevelOffset 0
                                                ;:bevelSegments 1})
-        material (THREE/MeshNormalMaterial.)]
+        material (THREE/MeshPhongMaterial.)]
     (useEffect
      (fn []
        (let [dummy (THREE/Object3D.)]
          (doseq [[row-index col-index] positions]
            (do
+             (println (+ (- (* 1.7 row-index)) offset-top))
              (.set (.-position dummy)
-                   col-index
-                   (- (* 1.7 row-index))
+                   (+ offset-left col-index)
+                   (- (- (* 1.7 row-index)) offset-top 1.7)
                    0)
              (.updateMatrix dummy)
              (.setMatrixAt
@@ -225,18 +228,21 @@
 
 
 
-(defn render-text [text]
+(defn render-text [{:keys [page-width page-height text]}]
   (let [letter-with-positions (text->letter-with-positions text)]
     [:<>
      (map-indexed
       (fn [index letter-position]
-        [render-letter letter-position])
+        [render-letter (assoc
+                        letter-position
+                        :page-height page-height
+                        :page-width page-width)])
       letter-with-positions)]))
 
 
 (defn view []
   (let [page-width  100
-        page-height 1000]
+        page-height 100]
     [canvas
      {:dpr [1 2]
       :shadows true
@@ -249,6 +255,9 @@
      [:ambientLight {:intensity 0.1}]
      [:> OrbitControls {:makeDefault true}]
      [:f> lights]
-    ; [page-box [page-width page-height]]
+     [page-box [page-width page-height]]
      [suspense {:fallback nil}
-      [render-text demo-text]]]))
+      [render-text
+       {:page-width page-width
+        :page-height page-height
+        :text demo-text}]]]))
